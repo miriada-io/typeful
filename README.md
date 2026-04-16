@@ -13,6 +13,18 @@ pip install type-cast
 
 Requires Python 3.11+.
 
+## Overview
+
+**Casting:** [`str_to_bool`](#str_to_bool) | [`to_bool`](#to_bool) | [`to_datetime`](#to_datetime) | [`to_list`](#to_list) | [`to_tuple`](#to_tuple) | [`try_cast`](#try_cast) | [`unflatten_dict`](#unflatten_dict) | [`url_to_snake_case`](#url_to_snake_case)
+
+**Type Introspection:** [`is_iterable`](#is_iterable) | [`is_instance`](#is_instance) | [`is_collection`](#is_collection) | [`is_mapping`](#is_mapping) | [`is_tuple`](#is_tuple) | [`get_name_from_type`](#get_name_from_type) | [`get_non_generic_args`](#get_non_generic_args) | [`get_container_type`](#get_container_type) | [`try_extract_type_notes`](#try_extract_type_notes) | [`DataclassProtocol`](#dataclassprotocol) | [`eval_forward_refs_in_local_dataclasses`](#eval_forward_refs_in_local_dataclasses)
+
+**Dataclass Conversion:** [`to_dataclass`](#to_dataclass) | [`convert_to_type`](#convert_to_type) | [`get_converter`](#get_converter) | [`get_dataclass_field_name_to_field`](#get_dataclass_field_name_to_field)
+
+**Errors:** [`FieldErrors`](#fielderrors) | [`MissingField`](#missingfield) | [`UnsupportedType`](#unsupportedtype)
+
+**Type Aliases:** [`note`](#type-aliases) | [`AnyType`](#type-aliases) | [`WideType`](#type-aliases) | [`MaybeAnnotated`](#type-aliases)
+
 ---
 
 ## Casting
@@ -64,10 +76,10 @@ Converts an ISO format string or a numeric timestamp to `datetime`.
 from type_cast import to_datetime
 
 to_datetime("2026-04-02T17:10:01")        # datetime(2026, 4, 2, 17, 10, 1)
-to_datetime("2026-04-02 17:10:01+03:00")  # datetime with tzinfo
+to_datetime("2026-04-02 17:10:01+03:00")  # datetime(2026, 4, 2, 17, 10, 1, tzinfo=timezone(timedelta(seconds=10800)))
 to_datetime("2026-04-02")                 # datetime(2026, 4, 2, 0, 0)
-to_datetime(1234567890)                   # datetime(2009, 2, 13, 23, 31, 30, tzinfo=UTC)
-to_datetime(1234567890.123)               # datetime with microseconds, UTC
+to_datetime(1234567890)                   # datetime(2009, 2, 13, 23, 31, 30, tzinfo=timezone.utc)
+to_datetime(1234567890.123)               # datetime(2009, 2, 13, 23, 31, 30, 123000, tzinfo=timezone.utc)
 ```
 
 ### `to_list`
