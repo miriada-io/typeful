@@ -1,7 +1,9 @@
 # type-cast
 
-[![Tests](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml/badge.svg)](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml)
-[![License](https://img.shields.io/github/license/miriada-io/type-cast)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/type-cast.svg?label=PyPI)](https://pypi.org/project/type-cast/)
+[![Python](https://img.shields.io/pypi/pyversions/type-cast.svg?label=Python)](https://pypi.org/project/type-cast/)
+[![Tests](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml)
+[![License](https://img.shields.io/pypi/l/type-cast.svg?label=License)](https://github.com/miriada-io/type-cast/blob/master/LICENSE)
 
 Tools to introspect, validate, and cast Python types at runtime.
 
