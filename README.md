@@ -1,21 +1,21 @@
-# type-cast
+# typeful
 
-[![PyPI](https://img.shields.io/pypi/v/type-cast.svg?label=PyPI)](https://pypi.org/project/type-cast/)
-[![Python](https://img.shields.io/pypi/pyversions/type-cast.svg?label=Python)](https://pypi.org/project/type-cast/)
-[![Tests](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/miriada-io/type-cast/actions/workflows/tests.yml)
-[![License](https://img.shields.io/pypi/l/type-cast.svg?label=License)](https://github.com/miriada-io/type-cast/blob/master/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/typeful.svg?label=PyPI)](https://pypi.org/project/typeful/)
+[![Python](https://img.shields.io/pypi/pyversions/typeful.svg?label=Python)](https://pypi.org/project/typeful/)
+[![Tests](https://github.com/miriada-io/typeful/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/miriada-io/typeful/actions/workflows/tests.yml)
+[![License](https://img.shields.io/pypi/l/typeful.svg?label=License)](https://github.com/miriada-io/typeful/blob/master/LICENSE)
 
 Tools to introspect, validate, and cast Python types at runtime.
 
 ## Installation
 
 ```bash
-pip install type-cast
+pip install typeful
 ```
 
 Requires Python 3.11+.
 
-## Why type-cast?
+## Why typeful?
 
 Python's built-in introspection and construction tools break in ordinary real-world cases:
 
@@ -32,7 +32,7 @@ No pydantic-style model hierarchies. No metaclass magic. Plain dataclasses and p
 
 ```python
 from dataclasses import dataclass, field
-from type_cast import to_dataclass, FieldErrors
+from typeful import to_dataclass, FieldErrors
 
 @dataclass
 class Address:
@@ -86,7 +86,7 @@ except FieldErrors as e:
 Converts a string to `bool`. Case-insensitive.
 
 ```python
-from type_cast import str_to_bool
+from typeful import str_to_bool
 
 str_to_bool("true")   # True
 str_to_bool("1")      # True
@@ -110,7 +110,7 @@ Converts `bool`, `int`, or `str` to `bool`.
 *Use when:* the built-in `bool()` is unsafe for strings — `bool("false")` returns `True`.
 
 ```python
-from type_cast import to_bool
+from typeful import to_bool
 
 to_bool(True)    # True
 to_bool(1)       # True
@@ -129,7 +129,7 @@ Converts an ISO format string or a numeric timestamp to `datetime`.
 *Use when:* you don't know upfront whether the value is an ISO string or a Unix timestamp — `datetime.fromisoformat` rejects timestamps; `datetime.fromtimestamp` rejects strings.
 
 ```python
-from type_cast import to_datetime
+from typeful import to_datetime
 
 to_datetime("2026-04-02T17:10:01")        # datetime(2026, 4, 2, 17, 10, 1)
 to_datetime("2026-04-02 17:10:01+03:00")  # datetime(2026, 4, 2, 17, 10, 1, tzinfo=timezone(timedelta(seconds=10800)))
@@ -145,7 +145,7 @@ Converts an iterable to a list, wraps non-iterables, handles `None`.
 *Use when:* built-in `list()` does the wrong thing: `list("abc")` unpacks into `['a','b','c']` and `list(None)` raises.
 
 ```python
-from type_cast import to_list
+from typeful import to_list
 
 to_list((1, 2, 3))             # [1, 2, 3]
 to_list(1)                     # [1]
@@ -167,7 +167,7 @@ to_list((1, 2), base_type=(tuple,))      # [(1, 2)]
 Same as `to_list`, but returns a `tuple`.
 
 ```python
-from type_cast import to_tuple
+from typeful import to_tuple
 
 to_tuple([1, 2, 3])            # (1, 2, 3)
 to_tuple(1)                    # (1,)
@@ -181,7 +181,7 @@ to_tuple("foo", base_type=None)  # ("f", "o", "o")
 Attempts to cast a value; returns a fallback on failure.
 
 ```python
-from type_cast import try_cast
+from typeful import try_cast
 
 try_cast("123", int)                    # 123
 try_cast("abc", int)                    # None (default fallback)
@@ -194,7 +194,7 @@ try_cast("abc", int, ..., TypeError)    # raises ValueError (not caught by TypeE
 Converts a flat dictionary with dot-separated keys into a nested one.
 
 ```python
-from type_cast import unflatten_dict
+from typeful import unflatten_dict
 
 unflatten_dict({"db.host": "localhost", "db.port": 5432})
 # {"db": {"host": "localhost", "port": 5432}}
@@ -208,7 +208,7 @@ unflatten_dict({"a/b/c": 1}, separator="/")
 Converts a URL to a snake_case string.
 
 ```python
-from type_cast import url_to_snake_case
+from typeful import url_to_snake_case
 
 url_to_snake_case("http://google.com")
 # "http_google_com"
@@ -228,7 +228,7 @@ Checks if an object is iterable. Strings, bytes, dicts, and generic aliases are 
 *Use when:* `hasattr(x, '__iter__')` is too loose — it treats strings and dicts as iterables, which is almost never what you want when processing a "collection of items".
 
 ```python
-from type_cast import is_iterable
+from typeful import is_iterable
 
 is_iterable([1, 2, 3])    # True
 is_iterable((1,))         # True
@@ -252,7 +252,7 @@ Advanced `isinstance` that supports generic types, unions, and nested containers
 *Use when:* built-in `isinstance(x, list[int])` raises `TypeError`. This library's version validates element types recursively.
 
 ```python
-from type_cast import is_instance
+from typeful import is_instance
 
 # Basic types
 is_instance(1, int)               # True
@@ -283,7 +283,7 @@ is_instance("anything", typing.Any)  # True
 Checks if a value is a collection with elements of a given type.
 
 ```python
-from type_cast import is_collection
+from typeful import is_collection
 
 is_collection([1, 2, 3], [int])         # True
 is_collection([1, "2", 3], [int])       # False
@@ -298,7 +298,7 @@ is_collection("not a collection", [])   # False
 Checks if a value is a mapping with keys/values of given types.
 
 ```python
-from type_cast import is_mapping
+from typeful import is_mapping
 
 is_mapping({}, [int, int])                    # True (empty)
 is_mapping({1: 2, 3: 4}, [int, int])         # True
@@ -312,7 +312,7 @@ is_mapping({1: "a", "b": 2}, [int | str, int | str])  # True
 Checks if a value is a tuple matching a type signature. Supports fixed-length and variable-length (with `...`).
 
 ```python
-from type_cast import is_tuple
+from typeful import is_tuple
 
 # Fixed-length
 is_tuple((1, "x"), [int, str])          # True
@@ -339,7 +339,7 @@ Returns a compact, readable name for a type.
 *Use when:* writing log messages or error strings. `str(typing.List[int])` renders as `'typing.List[int]'`; `repr(str | None)` is an awkward `'str | None'` only for the pipe-syntax form. This gives you one consistent compact form for everything.
 
 ```python
-from type_cast import get_name_from_type
+from typeful import get_name_from_type
 
 get_name_from_type(str)                   # "str"
 get_name_from_type(None)                  # "None"
@@ -358,7 +358,7 @@ Flattens nested generic type arguments into a flat tuple of concrete types.
 *Use when:* you need to enumerate every leaf type that can appear inside a composite annotation — e.g. to register converters, to build a union of acceptable types, or to walk the type shape of a field.
 
 ```python
-from type_cast import get_non_generic_args
+from typeful import get_non_generic_args
 
 get_non_generic_args(dict[int, str | None])
 # (int, str, NoneType)
@@ -375,7 +375,7 @@ Maps abstract container types to their concrete implementations.
 
 ```python
 import collections.abc
-from type_cast import get_container_type
+from typeful import get_container_type
 
 get_container_type(collections.abc.Mapping)     # dict
 get_container_type(collections.abc.Collection)  # list
@@ -395,7 +395,7 @@ Extracts the base type and annotation metadata from `Annotated` types.
 
 ```python
 from typing import Annotated
-from type_cast import try_extract_type_notes
+from typeful import try_extract_type_notes
 
 try_extract_type_notes(int)
 # (int, ())
@@ -413,7 +413,7 @@ A runtime-checkable protocol that matches any dataclass type or instance.
 
 ```python
 from dataclasses import dataclass
-from type_cast import DataclassProtocol
+from typeful import DataclassProtocol
 
 @dataclass
 class User:
@@ -432,7 +432,7 @@ Context manager that resolves forward references in locally-defined dataclasses.
 
 ```python
 from dataclasses import dataclass
-from type_cast import eval_forward_refs_in_local_dataclasses, get_evaled_dataclass_fields
+from typeful import eval_forward_refs_in_local_dataclasses, get_evaled_dataclass_fields
 
 with eval_forward_refs_in_local_dataclasses():
     @dataclass
@@ -458,7 +458,7 @@ Converts a dict (or any object) to a dataclass instance with automatic type cast
 
 ```python
 from dataclasses import dataclass
-from type_cast import to_dataclass
+from typeful import to_dataclass
 
 @dataclass
 class User:
@@ -547,7 +547,7 @@ Converts a single value to a target type using the registered converter.
 *Use when:* you have one value and one target type — no dataclass involved. It's the one-liner for "cast this string to `list[int]`" and similar. Internally calls `get_converter` and applies the result.
 
 ```python
-from type_cast import convert_to_type
+from typeful import convert_to_type
 
 convert_to_type(int, "42")               # 42
 convert_to_type(bool, "yes")             # True
@@ -573,7 +573,7 @@ Returns a cached converter function for a given type. Used internally by `to_dat
 *Use when:* you want the converter **function** as a first-class value — to store in a registry, pass as a callback, or apply repeatedly to many values. For a one-shot conversion, prefer [`convert_to_type`](#convert_to_type).
 
 ```python
-from type_cast import get_converter
+from typeful import get_converter
 
 int_converter = get_converter(int)
 int_converter("42")  # 42
@@ -602,7 +602,7 @@ Returns a frozen dict mapping field names to `dataclasses.Field` objects.
 
 ```python
 from dataclasses import dataclass, field, InitVar
-from type_cast import get_dataclass_field_name_to_field
+from typeful import get_dataclass_field_name_to_field
 
 @dataclass
 class Config:
@@ -626,7 +626,7 @@ Raised by `to_dataclass` when one or more fields fail to convert. Contains a `fi
 
 ```python
 from dataclasses import dataclass
-from type_cast import to_dataclass, FieldErrors
+from typeful import to_dataclass, FieldErrors
 
 @dataclass
 class Strict:
@@ -645,7 +645,7 @@ except FieldErrors as e:
 Raised when a required field has no value, no default, and no default_factory.
 
 ```python
-from type_cast import to_dataclass, FieldErrors, MissingField
+from typeful import to_dataclass, FieldErrors, MissingField
 
 @dataclass
 class Required:
@@ -668,7 +668,7 @@ Raised by `convert_to_type` when the target type has no registered converter.
 The library exports several type aliases useful for type introspection:
 
 ```python
-from type_cast import note, AnyType, WideType, MaybeAnnotated
+from typeful import note, AnyType, WideType, MaybeAnnotated
 
 # note — alias for typing.Annotated
 x: note[int, "positive"] = 42

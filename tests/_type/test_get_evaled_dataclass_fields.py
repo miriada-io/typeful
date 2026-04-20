@@ -2,7 +2,7 @@ import dataclasses
 
 import pytest
 
-from type_cast import eval_forward_refs_in_local_dataclasses, get_evaled_dataclass_fields
+from typeful import eval_forward_refs_in_local_dataclasses, get_evaled_dataclass_fields
 
 
 def test_get_evaled_dataclass_fields__local_dc():

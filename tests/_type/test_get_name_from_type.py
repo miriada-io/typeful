@@ -4,7 +4,7 @@ from dataclasses import InitVar
 import pytest
 from pytest import param
 
-from type_cast import get_name_from_type
+from typeful import get_name_from_type
 
 
 @pytest.mark.parametrize(

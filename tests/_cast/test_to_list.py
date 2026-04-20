@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from type_cast import DEFAULT_BASE_TYPES, ClassInfo, to_list
+from typeful import DEFAULT_BASE_TYPES, ClassInfo, to_list
 
 
 @pytest.mark.parametrize(

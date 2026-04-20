@@ -1,7 +1,7 @@
 import pytest
 from pytest import param
 
-from type_cast import str_to_bool
+from typeful import str_to_bool
 
 
 @pytest.mark.parametrize(

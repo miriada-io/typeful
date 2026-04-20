@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 
-from type_cast import get_dataclass_field_name_to_field
+from typeful import get_dataclass_field_name_to_field
 
 
 def test_get_dataclass_field_name_to_field__simple():

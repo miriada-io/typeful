@@ -4,7 +4,7 @@ import typing
 import pytest
 from pytest import param
 
-from type_cast import is_tuple
+from typeful import is_tuple
 
 
 @pytest.mark.parametrize(

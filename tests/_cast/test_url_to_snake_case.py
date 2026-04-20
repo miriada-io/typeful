@@ -1,6 +1,6 @@
 import pytest
 
-from type_cast import url_to_snake_case
+from typeful import url_to_snake_case
 
 
 @pytest.mark.parametrize(

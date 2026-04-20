@@ -1,5 +1,5 @@
 [project]
-name = "type-cast"
+name = "typeful"
 version = "1.0.0"
 description = "Tools to introspect, validate, and cast Python types at runtime"
 authors = [
@@ -14,7 +14,7 @@ dependencies = [
     "no-value>=1.0.0",
     "typing_extensions>=4.5.0",
 ]
-keywords = ["type", "cast", "casting", "typing", "introspection", "dataclass", "conversion", "validation"]
+keywords = ["typeful", "type", "cast", "casting", "typing", "introspection", "dataclass", "conversion", "validation"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -37,10 +37,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/miriada-io/type-cast"
-Repository = "https://github.com/miriada-io/type-cast"
-Issues = "https://github.com/miriada-io/type-cast/issues"
-Changelog = "https://github.com/miriada-io/type-cast/blob/master/CHANGELOG.md"
+Homepage = "https://github.com/miriada-io/typeful"
+Repository = "https://github.com/miriada-io/typeful"
+Issues = "https://github.com/miriada-io/typeful/issues"
+Changelog = "https://github.com/miriada-io/typeful/blob/master/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling>=1.27"]
@@ -50,7 +50,7 @@ build-backend = "hatchling.build"
 testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/type_cast"]
+packages = ["src/typeful"]
 
 [tool.ruff]
 line-length = 120
@@ -74,6 +74,6 @@ ignore = [
 # These modules capture the runtime class of `typing.List[...]` via `type(typing.List[int])`
 # to detect old-style generic aliases in user annotations. UP006/UP035 would rewrite to
 # `list[int]`, which produces `types.GenericAlias` — a *different* class — breaking detection.
-"src/type_cast/_type/_alias.py" = ["UP006"]
-"src/type_cast/_type/is_iterable.py" = ["UP006"]
-"src/type_cast/_type/is_instance.py" = ["UP006", "UP035"]
+"src/typeful/_type/_alias.py" = ["UP006"]
+"src/typeful/_type/is_iterable.py" = ["UP006"]
+"src/typeful/_type/is_instance.py" = ["UP006", "UP035"]

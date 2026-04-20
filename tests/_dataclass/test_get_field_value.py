@@ -5,7 +5,7 @@ import pytest
 from no_value import NoValue
 from pytest import param
 
-from type_cast import FieldErrors, MissingField, WideType, get_field_value
+from typeful import FieldErrors, MissingField, WideType, get_field_value
 
 
 @dataclass

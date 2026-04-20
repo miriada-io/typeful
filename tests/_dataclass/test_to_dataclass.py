@@ -5,7 +5,7 @@ import pytest
 import sqlalchemy.orm
 from pytest import param
 
-from type_cast import DataclassProtocol, to_dataclass
+from typeful import DataclassProtocol, to_dataclass
 
 
 def test_to_dataclass__simple():

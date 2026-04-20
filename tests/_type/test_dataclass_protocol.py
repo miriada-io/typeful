@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pytest import param
 
-from type_cast import DataclassProtocol
+from typeful import DataclassProtocol
 
 
 @dataclass

@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from type_cast import is_iterable
+from typeful import is_iterable
 
 
 @pytest.mark.parametrize(

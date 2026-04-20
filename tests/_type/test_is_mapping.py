@@ -4,7 +4,7 @@ import typing
 import pytest
 from pytest import param
 
-from type_cast import is_mapping
+from typeful import is_mapping
 
 
 class MyClass:
