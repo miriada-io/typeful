@@ -10,8 +10,14 @@ from frozendict import frozendict
 from .dataclass_protocol import DataclassProtocol
 from ._alias import WideType
 
-# noinspection PyUnresolvedReferences,PyProtectedMember
-eval_type = typing._eval_type
+if sys.version_info >= (3, 12):
+    def eval_type(t, globalns, localns):
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        return typing._eval_type(t, globalns, localns, type_params=())
+else:
+    def eval_type(t, globalns, localns):
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        return typing._eval_type(t, globalns, localns)
 
 
 @contextlib.contextmanager

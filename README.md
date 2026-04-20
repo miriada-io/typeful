@@ -15,6 +15,56 @@ pip install type-cast
 
 Requires Python 3.11+.
 
+## Why type-cast?
+
+Python's built-in introspection and construction tools break in ordinary real-world cases:
+
+- `isinstance(x, dict[str, int])` raises `TypeError` — no generics support. `is_instance` handles generics, unions, and nested containers.
+- `bool("false")` returns `True` — any non-empty string is truthy. `to_bool` understands `"true"/"false"/"yes"/"no"/"on"/"off"/"1"/"0"`.
+- `list("abc")` returns `['a','b','c']` and `list(None)` raises. `to_list` / `to_tuple` give you the intuitive behavior.
+- `datetime.fromisoformat` doesn't accept timestamps; `datetime.fromtimestamp` doesn't accept strings. `to_datetime` accepts both.
+- `str(typing.List[int])` prints `'typing.List[int]'` — ugly in logs and errors. `get_name_from_type` returns `'list[int]'`.
+- Turning `{"name": "Alice", "age": "30", "address": {...}}` into a nested dataclass with automatic type coercion is a one-liner with `to_dataclass` — no schemas, no models, no declaration beyond the dataclass itself.
+
+No pydantic-style model hierarchies. No metaclass magic. Plain dataclasses and plain values.
+
+## Quick Start
+
+```python
+from dataclasses import dataclass, field
+from type_cast import to_dataclass, FieldErrors
+
+@dataclass
+class Address:
+    city: str
+    zip_code: int
+
+@dataclass
+class User:
+    name: str
+    age: int
+    address: Address
+    tags: list[str] = field(default_factory=list)
+
+# Realistic payload — mixed strings and nested structures (e.g. from a form, config, or JSON):
+payload = {
+    "name": "Alice",
+    "age": "30",                                            # str → int
+    "address": {"city": "Moscow", "zip_code": "101000"},    # nested dict → nested dataclass
+    "tags": ["admin", "editor"],
+}
+
+user = to_dataclass(payload, User)
+# User(name='Alice', age=30, address=Address(city='Moscow', zip_code=101000), tags=['admin', 'editor'])
+
+# Invalid inputs aggregate into a single error, keyed by dotted field path:
+try:
+    to_dataclass({"name": "Bob", "age": "abc", "address": {"city": "X", "zip_code": "Y"}}, User)
+except FieldErrors as e:
+    print(dict(e.field_to_error))
+    # {'age': ValueError(...), 'address.zip_code': ValueError(...)}
+```
+
 ## Overview
 
 **Casting:** [`str_to_bool`](#str_to_bool) | [`to_bool`](#to_bool) | [`to_datetime`](#to_datetime) | [`to_list`](#to_list) | [`to_tuple`](#to_tuple) | [`try_cast`](#try_cast) | [`unflatten_dict`](#unflatten_dict) | [`url_to_snake_case`](#url_to_snake_case)
@@ -57,6 +107,8 @@ str_to_bool("maybe")  # raises ValueError
 
 Converts `bool`, `int`, or `str` to `bool`.
 
+*Use when:* the built-in `bool()` is unsafe for strings — `bool("false")` returns `True`.
+
 ```python
 from type_cast import to_bool
 
@@ -74,6 +126,8 @@ to_bool([])      # raises TypeError
 
 Converts an ISO format string or a numeric timestamp to `datetime`.
 
+*Use when:* you don't know upfront whether the value is an ISO string or a Unix timestamp — `datetime.fromisoformat` rejects timestamps; `datetime.fromtimestamp` rejects strings.
+
 ```python
 from type_cast import to_datetime
 
@@ -87,6 +141,8 @@ to_datetime(1234567890.123)               # datetime(2009, 2, 13, 23, 31, 30, 12
 ### `to_list`
 
 Converts an iterable to a list, wraps non-iterables, handles `None`.
+
+*Use when:* built-in `list()` does the wrong thing: `list("abc")` unpacks into `['a','b','c']` and `list(None)` raises.
 
 ```python
 from type_cast import to_list
@@ -169,6 +225,8 @@ url_to_snake_case("https://example.com/api/v1")
 
 Checks if an object is iterable. Strings, bytes, dicts, and generic aliases are excluded by default.
 
+*Use when:* `hasattr(x, '__iter__')` is too loose — it treats strings and dicts as iterables, which is almost never what you want when processing a "collection of items".
+
 ```python
 from type_cast import is_iterable
 
@@ -190,6 +248,8 @@ is_iterable([1, 2], base_type=(list,))   # False (list now excluded)
 ### `is_instance`
 
 Advanced `isinstance` that supports generic types, unions, and nested containers.
+
+*Use when:* built-in `isinstance(x, list[int])` raises `TypeError`. This library's version validates element types recursively.
 
 ```python
 from type_cast import is_instance
@@ -276,6 +336,8 @@ is_tuple((1, "a", 3.14), [])            # True (any tuple)
 
 Returns a compact, readable name for a type.
 
+*Use when:* writing log messages or error strings. `str(typing.List[int])` renders as `'typing.List[int]'`; `repr(str | None)` is an awkward `'str | None'` only for the pipe-syntax form. This gives you one consistent compact form for everything.
+
 ```python
 from type_cast import get_name_from_type
 
@@ -293,6 +355,8 @@ get_name_from_type(typing.Optional[str])  # "str | None"
 
 Flattens nested generic type arguments into a flat tuple of concrete types.
 
+*Use when:* you need to enumerate every leaf type that can appear inside a composite annotation — e.g. to register converters, to build a union of acceptable types, or to walk the type shape of a field.
+
 ```python
 from type_cast import get_non_generic_args
 
@@ -306,6 +370,8 @@ get_non_generic_args(dict[int | str, list[bool | None] | set[float]])
 ### `get_container_type`
 
 Maps abstract container types to their concrete implementations.
+
+*Use when:* you receive annotations like `Mapping[str, int]` or `Collection[int]` and need a real class to construct. `collections.abc` types can't be instantiated directly — this picks a sensible concrete type (`dict`, `list`, `set`).
 
 ```python
 import collections.abc
@@ -324,6 +390,8 @@ get_container_type(tuple)      # tuple
 ### `try_extract_type_notes`
 
 Extracts the base type and annotation metadata from `Annotated` types.
+
+*Use when:* a function accepts both plain types (`int`) and `Annotated[int, ...]` and you need to work with both uniformly — the base type on one side, the metadata on the other.
 
 ```python
 from typing import Annotated
@@ -360,6 +428,8 @@ isinstance("string", DataclassProtocol)  # False
 
 Context manager that resolves forward references in locally-defined dataclasses.
 
+*Use when:* you declare a dataclass inside a function or other local scope and it references itself (`list["Self"]`). Python's default machinery can't find `"Self"` in the local namespace, so the reference stays as an unresolved string. The context manager captures the calling frame and resolves it.
+
 ```python
 from dataclasses import dataclass
 from type_cast import eval_forward_refs_in_local_dataclasses, get_evaled_dataclass_fields
@@ -383,6 +453,8 @@ Without the context manager, `list["Node"]` would remain an unresolved string re
 ### `to_dataclass`
 
 Converts a dict (or any object) to a dataclass instance with automatic type casting.
+
+*Use when:* you have a dict (from JSON, config file, ORM row, or form input) and you want it typed as a dataclass, with strings coerced to ints, nested dicts turned into nested dataclasses, and errors aggregated per field — without declaring a Pydantic model, a schema, or a converter.
 
 ```python
 from dataclasses import dataclass
@@ -472,17 +544,33 @@ to_dataclass(Row(), User)  # User(name="Alice", age=30)
 
 Converts a single value to a target type using the registered converter.
 
+*Use when:* you have one value and one target type — no dataclass involved. It's the one-liner for "cast this string to `list[int]`" and similar. Internally calls `get_converter` and applies the result.
+
 ```python
 from type_cast import convert_to_type
 
-convert_to_type(int, "42")          # 42
-convert_to_type(bool, "yes")        # True
-convert_to_type(list[int], "[1,2]") # [1, 2]
+convert_to_type(int, "42")               # 42
+convert_to_type(bool, "yes")             # True
+convert_to_type(list[int], [1, 2, 3])    # [1, 2, 3]
+convert_to_type(list[int], ["1", "2"])   # [1, 2] — each element cast to int
+```
+
+**String values for container types are parsed as JSON** (via `json.loads`), then each element is cast to the inner type:
+
+```python
+convert_to_type(list[int], "[1, 2]")            # [1, 2]
+convert_to_type(dict[str, int], '{"a": 1}')     # {"a": 1}
+convert_to_type(tuple[int, ...], "[1, 2, 3]")   # (1, 2, 3)
+
+convert_to_type(list[int], "['a']")  # raises json.JSONDecodeError — single quotes aren't JSON
+convert_to_type(list[int], 123)      # raises ValueError — not iterable
 ```
 
 ### `get_converter`
 
 Returns a cached converter function for a given type. Used internally by `to_dataclass` and `convert_to_type`.
+
+*Use when:* you want the converter **function** as a first-class value — to store in a registry, pass as a callback, or apply repeatedly to many values. For a one-shot conversion, prefer [`convert_to_type`](#convert_to_type).
 
 ```python
 from type_cast import get_converter
@@ -494,9 +582,17 @@ bool_converter = get_converter(bool)
 bool_converter("yes")  # True
 
 list_int_converter = get_converter(list[int])
-list_int_converter("[1, 2, 3]")  # [1, 2, 3] (parses JSON string)
-list_int_converter([1, 2, 3])    # [1, 2, 3] (passes through)
+list_int_converter([1, 2, 3])     # [1, 2, 3] — passes through
+list_int_converter("[1, 2, 3]")   # [1, 2, 3] — parses JSON string
+
+dict_converter = get_converter(dict[str, int])
+dict_converter('{"a": 1}')        # {"a": 1} — parses JSON string
+
+tuple_converter = get_converter(tuple[int, ...])
+tuple_converter("[1, 2, 3]")      # (1, 2, 3) — parses JSON string
 ```
+
+For `list`, `tuple`, `set`, `frozenset`, `dict`: string values are parsed as JSON before element casting. Python literal syntax (single quotes) is **not** accepted — use valid JSON.
 
 Supported types: `str`, `int`, `float`, `bool`, `datetime.datetime`, `datetime.date`, `datetime.time`, `typing.Any`, dataclasses, unions, `list`, `tuple`, `set`, `frozenset`, `dict`, `InitVar`.
 
@@ -583,6 +679,19 @@ isinstance(int | str, AnyType)                    # True
 isinstance(typing.Annotated[int, "x"], AnyType)   # True
 isinstance(42, AnyType)                           # False (value, not type)
 ```
+
+---
+
+## Deprecated Aliases
+
+The following names are kept for backward compatibility. They are thin wrappers that emit a `DeprecationWarning` — prefer the canonical names in new code.
+
+| Deprecated | Use instead |
+| --- | --- |
+| `dict_to_dataclass(data, cls)` | [`to_dataclass(data, cls)`](#to_dataclass) |
+| `convert(type_, init, default, default_factory, value)` | `get_field_value(type_, init, default, default_factory, value)` |
+
+Both aliases forward all arguments unchanged; behavior is identical. They will be removed in a future major release.
 
 ## License
 
