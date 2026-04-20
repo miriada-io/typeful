@@ -17,6 +17,8 @@ __all__ = [
     "AnyType",
     "WideType",
     "MaybeAnnotated",
+    "TypingGenericAlias",
+    "AnnotatedAlias",
     "DataclassProtocol",
     "eval_forward_refs_in_local_dataclasses",
     "get_evaled_dataclass_fields",
