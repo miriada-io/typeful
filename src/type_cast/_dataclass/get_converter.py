@@ -86,9 +86,7 @@ def get_converter(type_: MaybeAnnotated[type[T]]) -> Callable[[Any], T]:
                     raise ValueError(f"Expected iterable, got {type(raw_values).__name__}: {raw_values}")
                 if not has_ellipsis and len(raw_values) != len(element_converters):
                     raise ValueError(f"Expected exactly {len(element_converters)} elements, got {len(raw_values)}")
-                result = tuple(
-                    converter_(element) for element, converter_ in zip(raw_values, element_converters, strict=False)
-                )
+                result = tuple(conv(val) for conv, val in zip(element_converters, raw_values, strict=False))
                 return result
         else:
             element_converter = get_converter(type_args[0])
