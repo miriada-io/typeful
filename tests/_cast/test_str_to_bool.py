@@ -4,19 +4,22 @@ from pytest import param
 from type_cast import str_to_bool
 
 
-@pytest.mark.parametrize(['bool_str', 'expected'], [
-    param("true", True),
-    param("1", True),
-    param("on", True),
-    param("+", True),
-    param("yes", True),
-    param("false", False),
-    param("0", False),
-    param("off", False),
-    param("-", False),
-    param("no", False),
-    param("not sure", ValueError(f'invalid literal for boolean:')),
-])
+@pytest.mark.parametrize(
+    ["bool_str", "expected"],
+    [
+        param("true", True),
+        param("1", True),
+        param("on", True),
+        param("+", True),
+        param("yes", True),
+        param("false", False),
+        param("0", False),
+        param("off", False),
+        param("-", False),
+        param("no", False),
+        param("not sure", ValueError("invalid literal for boolean:")),
+    ],
+)
 def test_str_to_bool__true(bool_str: str, expected: bool) -> None:
     if isinstance(expected, Exception):
         with pytest.raises(type(expected), match=expected.args[0]):

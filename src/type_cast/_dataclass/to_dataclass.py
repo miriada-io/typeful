@@ -6,19 +6,17 @@ from frozendict import frozendict
 from no_value import NoValue
 from typing_extensions import deprecated
 
+from .._type import DataclassProtocol, MaybeAnnotated, WideType, try_extract_type_notes
 from ._exceptions import FieldErrors
 from .get_dataclass_field_name_to_field import get_dataclass_field_name_to_field
 from .get_dataclass_field_name_to_type import get_dataclass_field_name_to_type
 from .get_field_value import get_field_value
-from .._type import DataclassProtocol, MaybeAnnotated, WideType, try_extract_type_notes
 
-DP = TypeVar('DP', bound=DataclassProtocol)
+DP = TypeVar("DP", bound=DataclassProtocol)
 
 
 def to_dataclass(
-        value: Mapping[str, Any] | DP | object,
-        dataclass_type: MaybeAnnotated[type[DP]],
-        stop_on_first_error: bool = False
+    value: Mapping[str, Any] | DP | object, dataclass_type: MaybeAnnotated[type[DP]], stop_on_first_error: bool = False
 ) -> DP:
     """
     Return a dataclass instance based on first argument:
@@ -47,10 +45,14 @@ def to_dataclass(
         raw_value = get_value(field_name, NoValue)
         try:
             result_value = get_field_value(
-                type_=field_type, init=field.init, default=field.default,
-                default_factory=field.default_factory, value=raw_value)
+                type_=field_type,
+                init=field.init,
+                default=field.default,
+                default_factory=field.default_factory,
+                value=raw_value,
+            )
         except FieldErrors as e:
-            field_name_to_error |= {f'{field_name}.{field}': error for field, error in e.field_to_error.items()}
+            field_name_to_error |= {f"{field_name}.{field}": error for field, error in e.field_to_error.items()}
             if stop_on_first_error:
                 break
             continue
@@ -70,7 +72,5 @@ def to_dataclass(
 
 
 @deprecated("Use to_dataclass instead")
-def dict_to_dataclass(
-        dict_value: Mapping[str, Any] | DP | object, dataclass: MaybeAnnotated[type[DP]]
-) -> DP:
+def dict_to_dataclass(dict_value: Mapping[str, Any] | DP | object, dataclass: MaybeAnnotated[type[DP]]) -> DP:
     return to_dataclass(dict_value, dataclass)

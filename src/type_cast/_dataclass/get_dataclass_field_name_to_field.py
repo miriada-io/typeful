@@ -7,14 +7,13 @@ from frozendict import frozendict
 
 @functools.cache
 def get_dataclass_field_name_to_field(
-        dataclass_: Any,
-        with_init_vars: bool = True, with_class_vars: bool = False
+    dataclass_: Any, with_init_vars: bool = True, with_class_vars: bool = False
 ) -> frozendict[str, dataclasses.Field]:
     try:
         # noinspection PyUnresolvedReferences,PyProtectedMember
         fields = getattr(dataclass_, dataclasses._FIELDS)
     except AttributeError:
-        raise TypeError("expected dataclass type")
+        raise TypeError(f"Expected dataclass type, got {dataclass_!r}, failed to extract fields data") from None
     # noinspection PyUnresolvedReferences,PyProtectedMember
     allowed_field_types = {dataclasses._FIELD}
     # noinspection PyUnresolvedReferences,PyProtectedMember

@@ -1,13 +1,14 @@
-from typing import TypeVar, Any, Callable
+from collections.abc import Callable
+from typing import Any, TypeVar
 
-from .._type.is_iterable import is_iterable, ClassInfo, DEFAULT_BASE_TYPES
+from .._type.is_iterable import DEFAULT_BASE_TYPES, ClassInfo, is_iterable
 
-T = TypeVar('T', bound=Any)
-P = TypeVar('P', bound=Any)
+T = TypeVar("T", bound=Any)
+P = TypeVar("P", bound=Any)
 
 
 def to_tuple(
-        x: T, base_type: ClassInfo | None = DEFAULT_BASE_TYPES, none: P | Callable[[], P] = tuple
+    x: T, base_type: ClassInfo | None = DEFAULT_BASE_TYPES, none: P | Callable[[], P] = tuple
 ) -> tuple[T, ...] | P:
     """If *obj* is iterable, convert to tuple::
 
@@ -59,4 +60,4 @@ def to_tuple(
 
     if is_iterable(x, base_type=base_type):
         return tuple(x)
-    return (x, )
+    return (x,)

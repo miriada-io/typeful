@@ -1,6 +1,7 @@
 import collections.abc
 import types
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 
 def is_collection(value: Any, collection_args: Sequence[type | types.GenericAlias]) -> bool:
@@ -16,6 +17,7 @@ def is_collection(value: Any, collection_args: Sequence[type | types.GenericAlia
     collection_type_list = [collection_args[0]]
 
     from .is_instance import is_instance
+
     for val in value:
         if not is_instance(val, collection_type_list):
             return False

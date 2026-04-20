@@ -1,7 +1,7 @@
 import dataclasses
 import types
 import typing
-from types import UnionType, NoneType
+from types import NoneType, UnionType
 from typing import Union
 
 
@@ -75,10 +75,10 @@ def get_name_from_type(type_: type | types.UnionType | dataclasses.InitVar | Non
     type_args = typing.get_args(type_)
     if type_origin is not None and type_args is not None:
         if type_origin in (Union, UnionType):
-            return ' | '.join(list(get_name_from_type(sub_type) for sub_type in type_args))
+            return " | ".join(list(get_name_from_type(sub_type) for sub_type in type_args))
         result = get_name_from_type(type_origin)
         if type_args:
-            result += '[' + (', '.join(list(get_name_from_type(sub_type) for sub_type in type_args))) + ']'
+            result += "[" + (", ".join(list(get_name_from_type(sub_type) for sub_type in type_args))) + "]"
         return result
     elif isinstance(type_, dataclasses.InitVar):
         return get_name_from_type(type_.type)

@@ -50,12 +50,12 @@ class User:
 payload = {
     "name": "Alice",
     "age": "30",                                            # str → int
-    "address": {"city": "Moscow", "zip_code": "101000"},    # nested dict → nested dataclass
+    "address": {"city": "Springfield", "zip_code": "12345"},  # nested dict → nested dataclass
     "tags": ["admin", "editor"],
 }
 
 user = to_dataclass(payload, User)
-# User(name='Alice', age=30, address=Address(city='Moscow', zip_code=101000), tags=['admin', 'editor'])
+# User(name='Alice', age=30, address=Address(city='Springfield', zip_code=12345), tags=['admin', 'editor'])
 
 # Invalid inputs aggregate into a single error, keyed by dotted field path:
 try:
@@ -210,8 +210,8 @@ Converts a URL to a snake_case string.
 ```python
 from type_cast import url_to_snake_case
 
-url_to_snake_case("http://ya.ru")
-# "http_ya_ru"
+url_to_snake_case("http://google.com")
+# "http_google_com"
 
 url_to_snake_case("https://example.com/api/v1")
 # "https_example_com_api_v1"
@@ -482,8 +482,8 @@ class User:
     name: str
     address: Address
 
-to_dataclass({"name": "Alice", "address": {"city": "Moscow"}}, User)
-# User(name="Alice", address=Address(city="Moscow"))
+to_dataclass({"name": "Alice", "address": {"city": "Springfield"}}, User)
+# User(name="Alice", address=Address(city="Springfield"))
 ```
 
 **Union types:**
@@ -526,7 +526,7 @@ to_dataclass({"value": "42"}, Annotated[Item, "validated"])
 **Passthrough — if value is already the target type:**
 
 ```python
-user = User(name="Alice", address=Address(city="Moscow"))
+user = User(name="Alice", address=Address(city="Springfield"))
 to_dataclass(user, User) is user  # True — returned as-is
 ```
 

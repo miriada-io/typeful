@@ -6,7 +6,7 @@ def get_container_type(type_origin) -> type:
         return type_origin
     container_type = ORIGIN_TO_CONTAINER_TYPE.get(type_origin)
     if container_type is None:
-        raise TypeError(f'Attempt to get_container_type from unexpected origin: {type_origin}')
+        raise TypeError(f"Attempt to get_container_type from unexpected origin: {type_origin}")
 
     return container_type
 

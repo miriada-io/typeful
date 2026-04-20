@@ -1,7 +1,7 @@
 import types
 import typing
 
-ClassInfo: typing.TypeAlias = type | types.UnionType | tuple['ClassInfo', ...]
+ClassInfo: typing.TypeAlias = type | types.UnionType | tuple["ClassInfo", ...]
 DEFAULT_BASE_TYPES: tuple[type, ...] = (str, bytes, dict, type(typing.List[int]), type(list[int]))
 
 
