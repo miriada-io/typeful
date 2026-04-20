@@ -16,13 +16,16 @@ class NonDC:
     pass
 
 
-@pytest.mark.parametrize(["value", "expected"], [
-    param(DC(), True),
-    param(DC, True),
-    param(NonDC(), False),
-    param(NonDC, False),
-    param(17, False),
-    param([], False),
-])
+@pytest.mark.parametrize(
+    ["value", "expected"],
+    [
+        param(DC(), True),
+        param(DC, True),
+        param(NonDC(), False),
+        param(NonDC, False),
+        param(17, False),
+        param([], False),
+    ],
+)
 def test_dataclass_protocol(value: Any, expected: bool) -> None:
     assert isinstance(value, DataclassProtocol) == expected

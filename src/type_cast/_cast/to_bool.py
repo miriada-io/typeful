@@ -10,4 +10,4 @@ def to_bool(value: Any) -> bool:
         return bool(value)
     if isinstance(value, str):
         return str_to_bool(value)
-    raise TypeError(f'Attempt to convert {type(value).__qualname__} to bool: {value=}')
+    raise TypeError(f"Attempt to convert {type(value).__qualname__} to bool: {value=}")

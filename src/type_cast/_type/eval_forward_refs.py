@@ -3,18 +3,21 @@ import dataclasses
 import inspect
 import sys
 import typing
-from typing import Mapping, Any
+from collections.abc import Mapping
+from typing import Any
 
 from frozendict import frozendict
 
-from .dataclass_protocol import DataclassProtocol
 from ._alias import WideType
+from .dataclass_protocol import DataclassProtocol
 
 if sys.version_info >= (3, 12):
+
     def eval_type(t, globalns, localns):
         # noinspection PyUnresolvedReferences,PyProtectedMember
         return typing._eval_type(t, globalns, localns, type_params=())
 else:
+
     def eval_type(t, globalns, localns):
         # noinspection PyUnresolvedReferences,PyProtectedMember
         return typing._eval_type(t, globalns, localns)
@@ -31,8 +34,7 @@ def eval_forward_refs_in_local_dataclasses():
 
 
 def _resolve_reverse_refs(
-        *targets: type[DataclassProtocol],
-        localns: Mapping[str, Any], globalns: Mapping[str, Any]
+    *targets: type[DataclassProtocol], localns: Mapping[str, Any], globalns: Mapping[str, Any]
 ) -> None:
     for target in targets:
         annotations = target.__annotations__
@@ -48,7 +50,7 @@ def _resolve_reverse_refs(
 
 
 def get_evaled_dataclass_fields(obj: type[DataclassProtocol]) -> frozendict[str, WideType]:
-    key_to_type = obj.__dict__.get('__key_to_type__')
+    key_to_type = obj.__dict__.get("__key_to_type__")
     if key_to_type is None:
         # noinspection PyTypeChecker
         eval_dataclass_fields(obj)
@@ -59,7 +61,7 @@ def get_evaled_dataclass_fields(obj: type[DataclassProtocol]) -> frozendict[str,
 
 def eval_dataclass_fields(obj: type[DataclassProtocol]) -> None:
     for base in reversed(obj.__mro__):
-        base_globals = getattr(sys.modules.get(base.__module__, None), '__dict__', {})
+        base_globals = getattr(sys.modules.get(base.__module__, None), "__dict__", {})
         base_locals = dict(vars(base))
         if not isinstance(base, DataclassProtocol):
             continue
@@ -74,8 +76,8 @@ def eval_dataclass_fields(obj: type[DataclassProtocol]) -> None:
                 value = eval_type(value, base_globals, base_locals)
             except NameError as e:
                 raise TypeError(
-                    f'Failed to evaluate type {value!r}: not found referenced {e.name!r}. '
-                    f'If it is class, created in local scope, wrap it in '
-                    f'`with eval_forward_refs_in_local_dataclasses():` to evaluate type references in local scope '
+                    f"Failed to evaluate type {value!r}: not found referenced {e.name!r}. "
+                    f"If it is class, created in local scope, wrap it in "
+                    f"`with eval_forward_refs_in_local_dataclasses():` to evaluate type references in local scope "
                 ) from None
             field.type = value

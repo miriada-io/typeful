@@ -1,6 +1,7 @@
 import itertools
 import types
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 
 def is_tuple(value: Any, tuple_args: Iterable[type | types.GenericAlias]) -> bool:
@@ -14,8 +15,7 @@ def is_tuple(value: Any, tuple_args: Iterable[type | types.GenericAlias]) -> boo
             has_ellipsis = True
         else:
             if has_ellipsis:
-                raise TypeError("Ellipsis (three dots (...)) should be the last"
-                                " in tuple to make it variable-length")
+                raise TypeError("Ellipsis (three dots (...)) should be the last in tuple to make it variable-length")
             type_checks.append(inner_type)
     if has_ellipsis:
         type_checks = itertools.cycle(type_checks)
@@ -24,7 +24,8 @@ def is_tuple(value: Any, tuple_args: Iterable[type | types.GenericAlias]) -> boo
             return False
 
     from .is_instance import is_instance
-    for val, inner_type in zip(value, type_checks):
+
+    for val, inner_type in zip(value, type_checks, strict=False):
         if not is_instance(val, [inner_type]):
             return False
 

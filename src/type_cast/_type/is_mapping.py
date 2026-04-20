@@ -1,6 +1,7 @@
 import collections.abc
 import types
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 
 def is_mapping(value: Any, mapping_args: Sequence[type | types.GenericAlias]) -> bool:
@@ -17,6 +18,7 @@ def is_mapping(value: Any, mapping_args: Sequence[type | types.GenericAlias]) ->
     value_type_list = [mapping_args[1]]
 
     from .is_instance import is_instance
+
     for key, val in value.items():
         if not is_instance(key, key_type_list) or not is_instance(val, value_type_list):
             return False

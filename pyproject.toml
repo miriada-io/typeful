@@ -32,6 +32,8 @@ dev = [
     "pytest>=8.0",
     "coverage>=7.0",
     "sqlalchemy>=2.0",
+    "ruff>=0.6",
+    "pre-commit>=3.0",
 ]
 
 [project.urls]
@@ -49,3 +51,29 @@ testpaths = ["tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/type_cast"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "E501",  # line too long — long comments/strings are ok
+    "B008",  # function calls in argument defaults — used for typing helpers
+]
+
+[tool.ruff.lint.per-file-ignores]
+# __init__.py files intentionally use star-imports and keep unused names for re-export
+"**/__init__.py" = ["F401", "F403"]
+# Tests verify support for BOTH old (typing.List, Optional, Union) and new (list[int], |)
+# syntax forms. Do not auto-upgrade tests — it removes old-form test coverage.
+# E721 is ignored in tests because comparisons like `field.type == list[int]` compare
+# generic aliases, for which `is` would give wrong results.
+"tests/**" = ["UP006", "UP007", "UP035", "UP045", "E721"]
+# These modules capture the runtime class of `typing.List[...]` via `type(typing.List[int])`
+# to detect old-style generic aliases in user annotations. UP006/UP035 would rewrite to
+# `list[int]`, which produces `types.GenericAlias` — a *different* class — breaking detection.
+"src/type_cast/_type/_alias.py" = ["UP006"]
+"src/type_cast/_type/is_iterable.py" = ["UP006"]
+"src/type_cast/_type/is_instance.py" = ["UP006", "UP035"]

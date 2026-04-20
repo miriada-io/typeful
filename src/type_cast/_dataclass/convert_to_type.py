@@ -1,12 +1,12 @@
-from typing import TypeVar, Any
+from typing import Any, TypeVar
 
 from no_value import NoValue
 
+from .._type import MaybeAnnotated, try_extract_type_notes
 from ._exceptions import UnsupportedType
 from .get_converter import get_converter
-from .._type import MaybeAnnotated, try_extract_type_notes
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def convert_to_type(type_: MaybeAnnotated[type[T]], value: Any | NoValue) -> T:

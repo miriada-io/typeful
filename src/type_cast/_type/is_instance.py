@@ -1,10 +1,10 @@
 import collections.abc
 import types
-from typing import Any, Iterable, Union, List, get_args, get_origin
+from typing import Any, Iterable, List, Union, get_args, get_origin
 
 from .get_container_type import get_container_type
-from .is_mapping import is_mapping
 from .is_collection import is_collection
+from .is_mapping import is_mapping
 from .is_tuple import is_tuple
 
 _GENERIC_ALIAS_TYPES = (type(List[int]), type(list[int]))
@@ -22,9 +22,8 @@ def _always_iterable(obj, base_type=_GENERIC_ALIAS_TYPES):
 
 
 def is_instance(
-        val: Any,
-        possible_types: type | types.GenericAlias | types.UnionType | Iterable[
-                        type | types.GenericAlias | types.UnionType]
+    val: Any,
+    possible_types: type | types.GenericAlias | types.UnionType | Iterable[type | types.GenericAlias | types.UnionType],
 ) -> bool:
     for type_ in _always_iterable(possible_types, base_type=_GENERIC_ALIAS_TYPES):
         if type_ == Any:
