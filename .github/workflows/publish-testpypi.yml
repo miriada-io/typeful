@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://test.pypi.org/project/type-cast/
+      url: https://test.pypi.org/project/typeful/
     permissions:
       id-token: write
     steps:

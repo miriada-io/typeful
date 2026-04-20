@@ -2,7 +2,7 @@ import collections.abc
 
 import pytest
 
-from type_cast import get_container_type
+from typeful import get_container_type
 
 
 def test_get_container_type():

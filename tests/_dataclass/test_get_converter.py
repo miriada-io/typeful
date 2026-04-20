@@ -5,7 +5,7 @@ import typing
 import pytest
 from pytest import param
 
-from type_cast import WideType, get_converter
+from typeful import WideType, get_converter
 
 get_converter = get_converter.__wrapped__
 

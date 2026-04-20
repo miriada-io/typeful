@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 from pytest import param
 
-from type_cast import to_datetime
+from typeful import to_datetime
 
 
 @pytest.mark.parametrize(

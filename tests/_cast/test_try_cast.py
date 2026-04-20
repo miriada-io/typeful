@@ -3,7 +3,7 @@ from typing import Any, Callable
 import pytest
 from pytest import param
 
-from type_cast import try_cast
+from typeful import try_cast
 
 
 @pytest.mark.parametrize(

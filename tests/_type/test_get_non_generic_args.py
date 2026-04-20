@@ -3,7 +3,7 @@ import types
 import pytest
 from pytest import param
 
-from type_cast._type import get_non_generic_args
+from typeful._type import get_non_generic_args
 
 
 class Some:

@@ -3,7 +3,7 @@ from typing import Annotated, TypeVar
 import pytest
 from pytest import param
 
-from type_cast import try_extract_type_notes
+from typeful import try_extract_type_notes
 
 
 def foo():

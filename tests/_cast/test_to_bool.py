@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 from pytest import param
 
-from type_cast import to_bool
+from typeful import to_bool
 
 
 @pytest.mark.parametrize(

@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 from pytest import param
 
-from type_cast import unflatten_dict
+from typeful import unflatten_dict
 
 
 @pytest.mark.parametrize(
